@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon-QuickBooks Linking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #000;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+        header img {
+            height: 30px; /* Adjust the logo size as needed */
+        }
+        main {
+            margin: 20px;
+        }
+        button {
+            color: #0073e6;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #linking-status {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function onLinkStarted() {
+            window.localStorage.setItem('linkingStatus', 'started');
+            var url = "https://embedded-partner-e2e.app.intuit.com/linking/initial?amazonFinalRedirectUri=https%3A%2F%2Fgithub.intuit.com%2Fpages%2Fnpangarkar%2Ftest-pages%2Famazon-poc%2Fpublic%2FamazonFinalRedirectUri.html";
+            var handle = window.open(url, "_blank");
+            // Start a timer to check the linking status every second
+            var checkStatusInterval = setInterval(function() {
+                if (window.localStorage.getItem('linkingStatus') === 'done') {
+                    clearInterval(checkStatusInterval);
+                    handle.close();
+                    document.getElementById('linking-status').textContent = 'Linking Done';
+                } else {
+                    document.getElementById('linking-status').textContent = 'Linking in progress';
+                }
+            }, 1000);
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <img src="../assets/amazon-logo.png" alt="Amazon Logo">
+        <nav style="padding: 0 20px;">
+            <a href="./amazon-initiate-linking.html" style="color: white; margin-right: 20px; text-decoration: none;">Linking Page</a>
+            <a href="./embed-qbo.html" style="color: white; text-decoration: none;">Experience Page</a>
+        </nav>
+    </header>
+    <main>
+        <button type="button" onclick="onLinkStarted()">
+            Initiate Amazon-QuickBooks linking flow
+        </button>
+        <p id="linking-status"></p>
+    </main>
+</body>
+</html>

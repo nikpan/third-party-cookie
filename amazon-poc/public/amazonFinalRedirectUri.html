@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Final Redirect Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        #timer {
+            font-size: 24px;
+            color: #ff0000;
+        }
+    </style>
+    <script>
+        let countdown = 5;
+
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            const interval = setInterval(() => {
+                if (countdown > 0) {
+                    timerElement.textContent = countdown;
+                    countdown--;
+                } else {
+                    window.localStorage.setItem('linkingStatus', 'done');
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+        window.onload = startTimer;
+    </script>
+</head>
+<body>
+    <h1>Amazon Final Redirect Page</h1>
+    <p>Closing in <span id="timer">5</span> seconds...</p>
+</body>
+</html>

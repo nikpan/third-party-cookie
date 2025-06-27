@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Amazon Seller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #000;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        header img {
+            height: 30px;
+            /* Adjust the logo size as needed */
+        }
+
+        main {
+            margin: 20px;
+        }
+    </style>
+    <script type="text/javascript"
+        src="https://appf-web-exp-integration.app.intuit.com/v1/appfabric-web-integration/iframe/script/iife/appf-web-exp-integration-webapp"></script>
+    <script>
+        const init = async () => {
+            const embeddedUrl = "https://e2e.qbo.intuit.com/app/homepage";
+            const { IntuitWebAppExperience } = globalThis.IntuitWeb;
+            const Widget = new IntuitWebAppExperience();
+
+            // Initialize it by providing a URL, namespace, props etc.
+            await Widget.init({
+                url: new URL(embeddedUrl),
+                namespace: `AmazonSeller-${Math.random()}`,
+                props: {
+                    constantProp: 'sameValue',
+                    dynamicProp: `dynamicValue-${Math.random()}`,
+                    sendMessageToFrame: (message) => {
+                        console.log(message);
+                    },
+                },
+                style: {
+                    'height': '1000px',
+                    'width': '1600px',
+                },
+            });
+            const container = document.getElementById('embedded-qbo-web-app');
+            container.style.display = 'block';
+            // Render the widget into the DOM container
+            const frame = await Widget.render(container);
+        }
+
+        window.onload = function () {
+            init();
+        }
+    </script>
+
+</head>
+
+<body style="background-color: lightgray;">
+    <header>
+        <img src="../assets/amazon-logo.png" alt="Amazon Logo">
+        <nav style="padding: 0 20px;">
+            <a href="./amazon-initiate-linking.html"
+                style="color: white; margin-right: 20px; text-decoration: none;">Linking Page</a>
+            <a href="./embed-qbo.html" style="color: white; text-decoration: none;">Experience Page</a>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <h1>Fake Amazon Seller Portal</h1>
+        </div>
+        <div style="border:1px blue;" width="1600" height="1000" style="border:1px blue; background-color: aliceblue;"
+            id="embedded-qbo-web-app">
+        </div>
+    </main>
+</body>
+
+</html>
