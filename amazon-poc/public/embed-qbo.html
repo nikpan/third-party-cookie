@@ -33,6 +33,7 @@
     function onLoad () {
       // Get references to the toggle and the iframe
       const bridgeSelector = document.getElementById('bridgeSelector');
+      const envSelector = document.getElementById('envSelector');
       // Find the iframe by its title attribute
       const iframe = document.querySelector('iframe[title="QBO Iframe"]');
       const defaultSrc = "https://embedded-partner-e2e.app.intuit.com/partner/bridge";
@@ -40,14 +41,22 @@
       const pluginDevToolSrc = "https://embedded-partner-e2e.app.intuit.com/pluginDevTool";
       iframe.src = defaultSrc;
 
-      bridgeSelector.addEventListener('change', function() {
+      function updateIframeSrc() {
         if (bridgeSelector.value === "unified") {
-          iframe.src = unifiedSrc;
+          iframe.src = unifiedSrc + "?qbo_env=" + envSelector.value;
         } else if (bridgeSelector.value === "pluginDevTool") {
           iframe.src = pluginDevToolSrc;
         } else {
-          iframe.src = defaultSrc;
+          iframe.src = defaultSrc + "?qbo_env=" + envSelector.value;
         }
+      }
+
+      bridgeSelector.addEventListener('change', function() {
+        updateIframeSrc();
+      });
+
+      envSelector.addEventListener('change', function() {
+        updateIframeSrc();
       });
     }
   </script>
@@ -73,6 +82,14 @@
           <option value="default">Default Bridge</option>
           <option value="unified">Unified Bridge</option>
           <option value="pluginDevTool">Plugin Dev Tool</option>
+        </select>
+      </label>
+      <label for="environmentSelector" style="font-weight: bold;">
+        Select Environment
+        <select id="envSelector" value="e2e" style="margin-right: 8px;">
+          <option value="e2e">E2E</option>
+          <option value="qal">QAL</option>
+          <option value="local">LOCAL</option>
         </select>
       </label>
     </div>
