@@ -43,11 +43,11 @@
 
       function updateIframeSrc() {
         if (bridgeSelector.value === "unified") {
-          iframe.src = unifiedSrc + "?qbo_env=" + envSelector.value;
+          iframe.src = unifiedSrc + "?qbo_env=" + envSelector.value + "&bypass_sso=" + !ssoToggle.checked;
         } else if (bridgeSelector.value === "pluginDevTool") {
           iframe.src = pluginDevToolSrc;
         } else {
-          iframe.src = defaultSrc + "?qbo_env=" + envSelector.value;
+          iframe.src = defaultSrc + "?qbo_env=" + envSelector.value + "&bypass_sso=" + !ssoToggle.checked;
         }
       }
 
@@ -56,6 +56,10 @@
       });
 
       envSelector.addEventListener('change', function() {
+        updateIframeSrc();
+      });
+
+      ssoToggle.addEventListener('change', function() {
         updateIframeSrc();
       });
     }
@@ -91,6 +95,10 @@
           <option value="qal">QAL</option>
           <option value="local">LOCAL</option>
         </select>
+      </label>
+      <label for="ssoToggle" style="font-weight: bold;">
+        <input type="checkbox" id="ssoToggle" style="margin-right: 8px;">
+        Enable SSO
       </label>
     </div>
     
