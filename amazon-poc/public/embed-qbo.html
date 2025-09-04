@@ -34,24 +34,55 @@
       // Get references to the toggle and the iframe
       const bridgeSelector = document.getElementById('bridgeSelector');
       const envSelector = document.getElementById('envSelector');
+      const mockSsoToggle = document.getElementById('mockSsoToggle');
+      const byPassSsoToggle = document.getElementById('byPassSsoToggle');
+      const ucToggle = document.getElementById('ucToggle');
       // Find the iframe by its title attribute
       const iframe = document.querySelector('iframe[title="QBO Iframe"]');
-      const defaultSrc = "https://embedded-partner-e2e.app.intuit.com/partner/bridge";
-      const unifiedSrc = "https://embedded-partner-e2e.app.intuit.com/partner/unified-bridge";
+      const bridgeSrc = "https://embedded-partner-e2e.app.intuit.com/session/hydration";
+      const phase1BridgeSrc = "https://embedded-partner-e2e.app.intuit.com/partner/bridge";
       const pluginDevToolSrc = "https://embedded-partner-e2e.app.intuit.com/pluginDevTool";
-      iframe.src = defaultSrc;
+      updateToggleVisibility();
+      updateIframeSrc();
 
       function updateIframeSrc() {
-        if (bridgeSelector.value === "unified") {
-          iframe.src = unifiedSrc + "?qbo_env=" + envSelector.value + "&bypass_sso=" + !ssoToggle.checked;
-        } else if (bridgeSelector.value === "pluginDevTool") {
-          iframe.src = pluginDevToolSrc;
+        if (bridgeSelector.value === "unifiedBridge") {
+          const queryParams = new URLSearchParams();
+          queryParams.append('qbo_env', envSelector.value);
+          queryParams.append('unified_context', ucToggle.checked);
+          queryParams.append('mock_sso', mockSsoToggle.checked);
+          iframe.src = bridgeSrc + "?" + queryParams.toString();
+        } else if (bridgeSelector.value === "bridge") {
+          const queryParams = new URLSearchParams();
+          queryParams.append('qbo_env', envSelector.value);
+          queryParams.append('bypass_sso', byPassSsoToggle.checked);
+          iframe.src = phase1BridgeSrc + "?" + queryParams.toString();
         } else {
-          iframe.src = defaultSrc + "?qbo_env=" + envSelector.value + "&bypass_sso=" + !ssoToggle.checked;
+          iframe.src = pluginDevToolSrc;
+        }
+      }
+
+      function updateToggleVisibility() {
+        const byPassSsoToggleLabel = document.getElementById('byPassSsoToggleLabel');
+        const ucToggleLabel = document.getElementById('ucToggleLabel');
+        const mockSsoToggleLabel = document.getElementById('mockSsoToggleLabel');
+        if (bridgeSelector.value === "unifiedBridge") {
+          byPassSsoToggleLabel.style.display = 'none';
+          ucToggleLabel.style.display = '';
+          mockSsoToggleLabel.style.display = '';
+        } else if (bridgeSelector.value === "bridge") {
+          byPassSsoToggleLabel.style.display = '';
+          ucToggleLabel.style.display = 'none';
+          mockSsoToggleLabel.style.display = 'none';
+        } else {
+          byPassSsoToggleLabel.style.display = 'none';
+          ucToggleLabel.style.display = 'none';
+          mockSsoToggleLabel.style.display = 'none';
         }
       }
 
       bridgeSelector.addEventListener('change', function() {
+        updateToggleVisibility();
         updateIframeSrc();
       });
 
@@ -59,7 +90,15 @@
         updateIframeSrc();
       });
 
-      ssoToggle.addEventListener('change', function() {
+      mockSsoToggle.addEventListener('change', function() {
+        updateIframeSrc();
+      });
+
+      byPassSsoToggle.addEventListener('change', function() {
+        updateIframeSrc();
+      });
+
+      ucToggle.addEventListener('change', function() {
         updateIframeSrc();
       });
     }
@@ -80,25 +119,33 @@
       <h1>Fake Amazon Seller Portal</h1>
     </div>
     <div style="margin-bottom: 20px;">
-      <label for="experienceSelector" style="font-weight: bold;">
+      <label style="font-weight: bold;">
         Select Bridge Type
-        <select id="bridgeSelector" value="default" style="margin-right: 8px;">
-          <option value="default">Default Bridge</option>
-          <option value="unified">Unified Bridge</option>
+        <select id="bridgeSelector" value="unifiedBridge" style="margin-right: 8px;">
+          <option value="bridge">Phase 1 Bridge</option>
+          <option value="unifiedBridge">Unified Bridge</option>
           <option value="pluginDevTool">Plugin Dev Tool</option>
         </select>
       </label>
-      <label for="environmentSelector" style="font-weight: bold;">
-        Select Environment
+      <label style="font-weight: bold;">
+        Select QBO Environment
         <select id="envSelector" value="e2e" style="margin-right: 8px;">
           <option value="e2e">E2E</option>
           <option value="qal">QAL</option>
           <option value="local">LOCAL</option>
         </select>
       </label>
-      <label for="ssoToggle" style="font-weight: bold;">
-        <input type="checkbox" id="ssoToggle" style="margin-right: 8px;">
-        Enable SSO
+      <label id="ucToggleLabel" style="font-weight: bold;">
+        <input type="checkbox" id="ucToggle" style="margin-right: 8px;">
+        Unified Context
+      </label>
+      <label id="mockSsoToggleLabel" style="font-weight: bold;">
+        <input type="checkbox" id="mockSsoToggle" style="margin-right: 8px;">
+        Mock SSO
+      </label>
+      <label id="byPassSsoToggleLabel" style="font-weight: bold;">
+        <input type="checkbox" id="byPassSsoToggle" style="margin-right: 8px;" checked>
+        By Pass SSO
       </label>
     </div>
     
